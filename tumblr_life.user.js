@@ -832,7 +832,7 @@ function menuQuery(html, state, ex) {
 	queries['post[state]'] = {
 		'add-to-queue': '2',
 		'private'     : 'private'
-	}[state] || '1';
+	}[state] || '0';
 
     queries['channel_id'] = (ex && ex.channel_id ? ex.channel_id : undefined);
 
