@@ -100,6 +100,7 @@ var tumblrLife = {
 	reblogManually  : reblogManually,
 	fixPosition     : fixPosition,
 	showShortcutHelp: showShortcutHelp,
+    scaleImage      : scaleImage,
 
 	addPaginateHook: function() {
 		if (!this.paginate) return;
@@ -153,11 +154,13 @@ function setup() {
 var shortcuts = {
 	/* K */ 75: 'prevPosition',
 	/* J */ 74: 'nextPosition',
-	/* R */ 82: 'reblog',
+	/* H */ 72: 'reblog',
+	// /* R */ 82: 'reblog',
 	// /* A */ 65: 'like',
 	/* Q */ 81: 'reblogAddToQueue',
 	/* W */ 87: 'reblogPrivate',
-	/* E */ 69: 'reblogManually'
+	/* E */ 69: 'reblogManually',
+    /* I */ 73: 'scaleImage',
 };
 
 function handleEvent(e) {
@@ -180,6 +183,7 @@ function handleEvent(e) {
 			case 'nextPosition':
 			case 'prevPosition':
 			case 'like':
+            case 'scaleImage':
 				this[command](e);
 				break;
 
@@ -201,6 +205,34 @@ function handleEvent(e) {
 		target.nodeName == 'LI' && target.className.indexOf('post') != -1 && this.posts.push(target);
 		break;
 	}
+}
+
+function scaleImage() {
+    // TODO: don't create event object every times
+    var click = d.createEvent("MouseEvents"); 
+    click.initEvent("click", false, true);
+
+    if (navigator.appVersion.search('Chrome') >= 0) {
+        var p = this.currentPost;
+        var obj = p.querySelector('img.image_thumbnail') ||
+                  d.querySelector('#tumblr_lightbox') ||
+                  p.querySelector('a.photoset_photo');
+        obj.dispatchEvent(click);
+    }
+    else {
+        /* firefox or any */
+        var p = this.currentPost;
+        if (p.querySelector('img.image_thumbnail')) {
+            var obj = p.querySelector('img.image_thumbnail');
+            // element has `onclick` and it can't be launched from dispatchEvent
+            obj.onclick.apply(obj);
+        }
+        else if (p.querySelector('a.photoset_photo')) {
+            var obj = d.querySelector('#tumblr_lightbox') ||
+                      p.querySelector('a.photoset_photo');
+            obj.dispatchEvent(click);
+        }
+    }
 }
 
 function _deletePost(target) {
@@ -793,16 +825,14 @@ function menuQuery(html, state, ex) {
 	queries['post[state]'] = {
 		'add-to-queue': '2',
 		'private'     : 'private'
-	}[state] || '0';
+	}[state] || '1';
 
-    if (ex && ex.channel_id) {
-        queries['channel_id'] = ex.channel_id;
-    }
+    queries['channel_id'] = (ex && ex.channel_id ? ex.channel_id : undefined);
 
 	queries['post[tags]'] = this.menuContainer.querySelector('input.tumblrlife-tags').value;
 	delete queries['preview_post'];
 
-	trimReblogInfo(queries);
+	// trimReblogInfo(queries);
 
 	return queries;
 }
@@ -811,6 +841,7 @@ function menuQuery(html, state, ex) {
 // https://github.com/to/tombloo/blob/master/xpi/chrome/content/library/20_Tumblr.js
 function trimReblogInfo(queries) {
 	function trimQuote(entry) {
+        // TODO: 投稿ソースの情報は残す
 		entry = entry.replace(/<p><\/p>/g, '').replace(/<p><a[^<]+<\/a>:<\/p>/g, '');
 		entry = (function loop(_, contents) {
 			return contents.replace(/<blockquote>(([\n\r]|.)+)<\/blockquote>/gm, loop);
