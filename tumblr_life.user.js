@@ -339,6 +339,13 @@ function updatePosition(i, scroll) {
 }
 
 function showShortcutHelp() {
+    function key_by_value(o, c) {
+        for (var k in o) {
+            if (o[k]==c) return k;
+        }
+        return undefined;
+    }
+    var fc = String.fromCharCode;
 	var container = d.getElementById('right_column');
 	if (container) {
 		var div = d.createElement('div');
@@ -346,13 +353,13 @@ function showShortcutHelp() {
 		div.className = 'dashboard_nav_item';
 
 		var li = [
-			'<li class="tumblrlife-shortcut-key-help-default tumblrlife-shortcut-key-help-next"><kbd>J</kbd>next</li>',
-			'<li class="tumblrlife-shortcut-key-help-default tumblrlife-shortcut-key-help-prev"><kbd>K</kbd>previous</li>',
-			'<li class="tumblrlife-shortcut-key-help-default tumblrlife-shortcut-key-help-like"><kbd>L</kbd>like, unlike</li>',
-			'<li><kbd>R</kbd>reblog</li>',
-			'<li><kbd>Q</kbd>add to queue</li>',
-			'<li><kbd>W</kbd>private</li>',
-			'<li><kbd>E</kbd>reblog manually</li>'
+			'<li class="tumblrlife-shortcut-key-help-default tumblrlife-shortcut-key-help-next"><kbd>' + fc(key_by_value(shortcuts, 'nextPosition')) + '</kbd>next</li>',
+			'<li class="tumblrlife-shortcut-key-help-default tumblrlife-shortcut-key-help-prev"><kbd>' + fc(key_by_value(shortcuts, 'prevPosition')) + '</kbd>previous</li>',
+			'<li class="tumblrlife-shortcut-key-help-default tumblrlife-shortcut-key-help-like"><kbd>' + fc(key_by_value(shortcuts, 'like')) + '</kbd>like, unlike</li>',
+			'<li><kbd>' + fc(key_by_value(shortcuts, 'reblog'))  + '</kbd>reblog</li>',
+			'<li><kbd>' + fc(key_by_value(shortcuts, 'reblogAddToQueue'))  + '</kbd>add to queue</li>',
+			'<li><kbd>' + fc(key_by_value(shortcuts, 'reblogPrivate'))  + '</kbd>private</li>',
+			'<li><kbd>' + fc(key_by_value(shortcuts, 'reblogManually'))  + '</kbd>reblog manually</li>'
 		];
 		div.innerHTML = [
 			'<div class="dashboard_nav_title">Shortcut Keys</div>',
