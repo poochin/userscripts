@@ -339,9 +339,11 @@ function updatePosition(i, scroll) {
 }
 
 function showShortcutHelp() {
-    function key_by_value(o, c) {
-        for (var k in o) {
-            if (o[k]==c) return k;
+    function key_by_value(obj, c) {
+        var i, len, keys = Object.keys(obj);
+        for (i = 0, len = keys.length; i < len; ++i) {
+            if (obj[keys[i]] == c)
+                return k;
         }
         return undefined;
     }
