@@ -832,7 +832,7 @@ function menuQuery(html, state, ex) {
 	queries['post[state]'] = {
 		'add-to-queue': '2',
 		'private'     : 'private'
-	}[state] || '0';
+	}[state] || '1';
 
     queries['channel_id'] = (ex && ex.channel_id ? ex.channel_id : undefined);
 
@@ -848,16 +848,17 @@ function menuQuery(html, state, ex) {
 // https://github.com/to/tombloo/blob/master/xpi/chrome/content/library/20_Tumblr.js
 function trimReblogInfo(queries) {
 	function trimQuote(entry) {
-        // TODO: オリジナルの投稿者の情報だけ残すようにする
-		entry = (function loop(_, contents) {
-                             return contents.replace(/.+(<p><a class="tumblr_blog".+?<\/blockquote>).+/gm, loop);
-        })(null, entry);
+        // オリジナルの投稿者の情報だけは残すようにしました
+        entry = (function loop(_, contents) {
+            return contents.replace(/.+(<p><a[^>]+class="tumblr_blog".+?<\/blockquote>).*/gm, loop);
+        })(null, entry.replace(/[\n]/g, ""));
 		return entry.trim();
         /* origin:
 		entry = entry.replace(/<p><\/p>/g, '').replace(/<p><a[^<]+<\/a>:<\/p>/g, '');
         (function loop(_, contents) {
 			return contents.replace(/<blockquote>(([\n\r]|.)+)<\/blockquote>/gm, loop);
 		})(null, entry);
+        return entry.trim();
         */
 	}
 
