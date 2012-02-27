@@ -832,14 +832,14 @@ function menuQuery(html, state, ex) {
 	queries['post[state]'] = {
 		'add-to-queue': '2',
 		'private'     : 'private'
-	}[state] || '1';
+	}[state] || '0';
 
     queries['channel_id'] = (ex && ex.channel_id ? ex.channel_id : undefined);
 
 	queries['post[tags]'] = this.menuContainer.querySelector('input.tumblrlife-tags').value;
 	delete queries['preview_post'];
 
-	// trimReblogInfo(queries);
+	trimReblogInfo(queries);
 
 	return queries;
 }
@@ -848,12 +848,17 @@ function menuQuery(html, state, ex) {
 // https://github.com/to/tombloo/blob/master/xpi/chrome/content/library/20_Tumblr.js
 function trimReblogInfo(queries) {
 	function trimQuote(entry) {
-        // TODO: 投稿ソースの情報は残す
-		entry = entry.replace(/<p><\/p>/g, '').replace(/<p><a[^<]+<\/a>:<\/p>/g, '');
+        // TODO: オリジナルの投稿者の情報だけ残すようにする
 		entry = (function loop(_, contents) {
+                             return contents.replace(/.+(<p><a class="tumblr_blog".+?<\/blockquote>).+/gm, loop);
+        })(null, entry);
+		return entry.trim();
+        /* origin:
+		entry = entry.replace(/<p><\/p>/g, '').replace(/<p><a[^<]+<\/a>:<\/p>/g, '');
+        (function loop(_, contents) {
 			return contents.replace(/<blockquote>(([\n\r]|.)+)<\/blockquote>/gm, loop);
 		})(null, entry);
-		return entry.trim();
+        */
 	}
 
 	switch (queries['post[type]']) {
