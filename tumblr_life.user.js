@@ -54,6 +54,12 @@ GM_addStyle([
 	// 色は投稿ページのタグに合わせる
 	'.tumblrlife-menu div div input { width:120px; height:17px; padding:0; font-size:11px; color:#444; border:none; }',
 	'.tumblrlife-menu input::-webkit-input-placeholder, .tumblrlife-menu input::-moz-placeholder { color:#a6a6a6 !important; }',	
+    // チャンネルメニュー用の設定
+    '.tumblrlife-menu .tumblrlife-menu-submenu {position: relative; padding-right: -6px; border-right: 6px solid #becbd8;}',
+    '.tumblrlife-menu .tumblrlife-menu-submenu:hover {cursor: auto; padding-right: 0; border-right: 0;}',
+    '.tumblrlife-menu .tumblrlife-menu-submenu ul {position: absolute; top: 0; left: 140px; display: none;}',
+    '.tumblrlife-menu .tumblrlife-menu-submenu:hover ul {display: block;}',
+
 
 	'.tumblrlife-fail { color:#c00; }',
 
@@ -647,6 +653,9 @@ function menuHandleEvent(e) {
 	if (e.target.nodeName === 'INPUT') {
 		return;
 	}
+    if (/tumblrlife-noaction/.test(e.target.className)) {
+        return;
+    }
 	switch (e.type) {
 	case 'click':
 		if (this.reblogging) {
@@ -681,7 +690,9 @@ var menu_channels = channels.slice(1).map(function(channel) {
 
 var menu_template_menu = [
 	'<ul>',
+    '<li class="tumblrlife-menu-submenu tumblrlife-noaction">add to channel &gt;<ul>',
     menu_channels,
+    '</ul></li>',
 	'<li class="tumblrlife-reblog-add-to-queue">add to queue</li>',
 	'<li class="tumblrlife-reblog-private">private</li>',
 	'<li class="tumblrlife-reblog-manually"><a href="${href}" target="_blank">reblog manually</a></li>',
