@@ -154,7 +154,6 @@ function setup() {
 var shortcuts = {
 	/* K */ 75: 'prevPosition',
 	/* J */ 74: 'nextPosition',
-	// /* H */ 72: 'reblog',
 	/* R */ 82: 'reblog',
 	// /* A */ 65: 'like',
 	/* Q */ 81: 'reblogAddToQueue',
@@ -834,14 +833,14 @@ function menuQuery(html, state, ex) {
 	queries['post[state]'] = {
 		'add-to-queue': '2',
 		'private'     : 'private'
-	}[state] || '0';
+	}[state] || '1';
 
     queries['channel_id'] = (ex && ex.channel_id ? ex.channel_id : undefined);
 
 	queries['post[tags]'] = this.menuContainer.querySelector('input.tumblrlife-tags').value;
 	delete queries['preview_post'];
 
-	trimReblogInfo(queries);
+	// trimReblogInfo(queries);
 
 	return queries;
 }
@@ -851,6 +850,7 @@ function menuQuery(html, state, ex) {
 function trimReblogInfo(queries) {
 	function trimQuote(entry) {
         // オリジナルの投稿者の情報だけは残すようにしました
+        // FIXME: photo 以外で誤動作を確認しました
         entry = (function loop(_, contents) {
             return contents.replace(/.+(<p><a[^>]+class="tumblr_blog".+?<\/blockquote>).*/gm, loop);
         })(null, entry.replace(/[\n]/g, ""));
