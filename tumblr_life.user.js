@@ -790,12 +790,8 @@ function menuReblog(state, ex) {
 					self.reblogging = false;
 					container.className = container.className.replace('tumblrlife-reblogging', 'tumblrlife-reblogged');
 					menu_container.removeEventListener('click', self, false);
-<<<<<<< HEAD
-					menu_container.innerHTML = 'reblogged' + (state ? {
-                        'add-to-channel': ' (ch: ' + ex.channel_id + ')',
-=======
 					menu_container.innerHTML = '<span>reblogged' + (state ? {
->>>>>>> master
+                        'add-to-channel': ' (ch: ' + ex.channel_id + ')',
 						'add-to-queue': ' (queue)',
 						'private'     : ' (private)'
 					}[state] : '') + '</span>';
