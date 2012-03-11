@@ -159,8 +159,7 @@ function setup() {
 var shortcuts = {
 	/* K */ 75: 'prevPosition',
 	/* J */ 74: 'nextPosition',
-	/* H */ 72: 'reblog',
-	// /* R */ 82: 'reblog',
+	/* R */ 82: 'reblog',
 	// /* A */ 65: 'like',
 	/* Q */ 81: 'reblogAddToQueue',
 	/* W */ 87: 'reblogPrivate',
@@ -212,10 +211,11 @@ function handleEvent(e) {
 	}
 }
 
-var event_leftclick = d.createEvent("MouseEvents"); 
-click.initEvent("click", false, true);
+var left_click = d.createEvent("MouseEvents"); 
+left_click.initEvent("click", false, true);
 function scaleImage() {
-    type = this.currentPost.className.match(/\b(?:photo|regular|quote|link|conversation|audio|video)\b/)[0];
+    var r = /\b(?:photo|regular|quote|link|conversation|audio|video)\b/;
+    var type = this.currentPost.className.match(r)[0];
     if (type != "photo" && type != "video") {
         return;
     }
@@ -226,7 +226,7 @@ function scaleImage() {
             var obj = p.querySelector('img.image_thumbnail') ||
                       d.querySelector('#tumblr_lightbox') ||
                       p.querySelector('a.photoset_photo');
-            obj.dispatchEvent(event_leftclick);
+            obj.dispatchEvent(left_click);
         }
         else {
             /* firefox or any */
@@ -239,9 +239,16 @@ function scaleImage() {
             else if (p.querySelector('a.photoset_photo')) {
                 var obj = d.querySelector('#tumblr_lightbox') ||
                           p.querySelector('a.photoset_photo');
-                obj.dispatchEvent(event_leftclick);
+                obj.dispatchEvent(left_click);
             }
         }
+    }
+    else if (type == 'video') {
+        if (navigator.appVersion.search('Chrome') >= 0) {
+            var video = this.currentPost.querySelector('.video_thumbnail');
+            video.dispatchEvent(left_click);
+        }
+        // FIXME: Firefox など他のブラウザでの挙動は観測していません。
     }
 }
 
@@ -849,7 +856,7 @@ function menuQuery(html, state, ex) {
 	queries['post[state]'] = {
 		'add-to-queue': '2',
 		'private'     : 'private'
-	}[state] || '1';
+	}[state] || '0';
 
     queries['channel_id'] = (ex && ex.channel_id ? ex.channel_id : undefined);
 
