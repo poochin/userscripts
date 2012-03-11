@@ -159,7 +159,8 @@ function setup() {
 var shortcuts = {
 	/* K */ 75: 'prevPosition',
 	/* J */ 74: 'nextPosition',
-	/* R */ 82: 'reblog',
+	/* H */ 72: 'reblog',
+	// /* R */ 82: 'reblog',
 	// /* A */ 65: 'like',
 	/* Q */ 81: 'reblogAddToQueue',
 	/* W */ 87: 'reblogPrivate',
@@ -856,7 +857,7 @@ function menuQuery(html, state, ex) {
 	queries['post[state]'] = {
 		'add-to-queue': '2',
 		'private'     : 'private'
-	}[state] || '0';
+	}[state] || '1';
 
     queries['channel_id'] = (ex && ex.channel_id ? ex.channel_id : undefined);
 
