@@ -212,30 +212,35 @@ function handleEvent(e) {
 	}
 }
 
+var event_leftclick = d.createEvent("MouseEvents"); 
+click.initEvent("click", false, true);
 function scaleImage() {
-    // TODO: don't create event object every times
-    var click = d.createEvent("MouseEvents"); 
-    click.initEvent("click", false, true);
-
-    if (navigator.appVersion.search('Chrome') >= 0) {
-        var p = this.currentPost;
-        var obj = p.querySelector('img.image_thumbnail') ||
-                  d.querySelector('#tumblr_lightbox') ||
-                  p.querySelector('a.photoset_photo');
-        obj.dispatchEvent(click);
+    type = this.currentPost.className.match(/\b(?:photo|regular|quote|link|conversation|audio|video)\b/)[0];
+    if (type != "photo" && type != "video") {
+        return;
     }
-    else {
-        /* firefox or any */
-        var p = this.currentPost;
-        if (p.querySelector('img.image_thumbnail')) {
-            var obj = p.querySelector('img.image_thumbnail');
-            // element has `onclick` and it can't be launched from dispatchEvent
-            obj.onclick.apply(obj);
-        }
-        else if (p.querySelector('a.photoset_photo')) {
-            var obj = d.querySelector('#tumblr_lightbox') ||
+
+    if (type == "photo") {
+        if (navigator.appVersion.search('Chrome') >= 0) {
+            var p = this.currentPost;
+            var obj = p.querySelector('img.image_thumbnail') ||
+                      d.querySelector('#tumblr_lightbox') ||
                       p.querySelector('a.photoset_photo');
-            obj.dispatchEvent(click);
+            obj.dispatchEvent(event_leftclick);
+        }
+        else {
+            /* firefox or any */
+            var p = this.currentPost;
+            if (p.querySelector('img.image_thumbnail')) {
+                var obj = p.querySelector('img.image_thumbnail');
+                // element has `onclick` and it can't be launched from dispatchEvent
+                obj.onclick.apply(obj);
+            }
+            else if (p.querySelector('a.photoset_photo')) {
+                var obj = d.querySelector('#tumblr_lightbox') ||
+                          p.querySelector('a.photoset_photo');
+                obj.dispatchEvent(event_leftclick);
+            }
         }
     }
 }
