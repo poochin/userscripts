@@ -290,17 +290,14 @@ function prevPosition() {
 		posts = this.posts,
 		a, y, post;
 
+	y = w.scrollY + post_margin_top;
+	post = posts[prev];
 
-	if (prev >= 0) {
-		y = w.scrollY + post_margin_top;
-		post = posts[prev];
-
-		if (post && post.offsetTop == y) {
-			this.updatePosition(prev);
-		}
-		else {
-			this.findPosition(prev, y);
-		}
+	if (post && post.offsetTop == y) {
+		this.updatePosition(prev);
+	}
+	else {
+		this.findPosition(prev, y);
 	}
 }
 
